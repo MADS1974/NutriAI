@@ -3,8 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-} // Adicionei esta linha para config. plugin de segredos e proteger a api key
-
+}
 android {
     namespace = "br.edu.ifsp.scl.sdm.devmads.nutriai"
     compileSdk = 36
@@ -61,6 +60,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation("androidx.navigation:navigation-compose:2.8.0")
 
+
     // Após o inicio do projeto adicionei outras depencendias
     // Room (Banco de dados local)
     val roomVersion = "2.6.1"
@@ -74,7 +74,9 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     // Gemini AI SDK
-    implementation("com.google.ai.client.generativeai:generativeai:0.7.0")
+    // Gemini AI SDK
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
+
 
     // Coil (Para carregar imagens/fotos das refeições)
     implementation("io.coil-kt:coil-compose:2.6.0")
