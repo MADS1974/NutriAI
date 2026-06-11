@@ -1,66 +1,74 @@
 package br.edu.ifsp.scl.sdm.devmads.nutriai.ui.viewmodel
 
+import android.app.Application
 import android.graphics.Bitmap
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.ai.client.generativeai.GenerativeModel
-import com.google.ai.client.generativeai.type.content // IMPORTANTE: Adicionado para suporte a imagem
+import com.google.ai.client.generativeai.type.content
 import br.edu.ifsp.scl.sdm.devmads.nutriai.BuildConfig
+import br.edu.ifsp.scl.sdm.devmads.nutriai.data.NutriDatabase
+import br.edu.ifsp.scl.sdm.devmads.nutriai.data.Refeicao
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class NutriViewModel : ViewModel() {
+class NutriViewModel(application: Application) : AndroidViewModel(application) {
 
-    // 1. Variável para o texto que o usuário digita
+    private val dao = NutriDatabase.getDatabase(application).refeicaoDao()
+
+    val todasRefeicoes = dao.listarTodas().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
+
     var textoRefeicao by mutableStateOf("")
-
-    // 2. Estados da UI
     var analiseResultado by mutableStateOf("")
         private set
-
     var carregando by mutableStateOf(false)
         private set
-
     var imagemSelecionada by mutableStateOf<Bitmap?>(null)
 
     private val generativeModel = GenerativeModel(
-        modelName = "gemini-3.5-flash",
+        modelName = "gemini-3.1-flash-lite",
         apiKey = BuildConfig.GEMINI_API_KEY
     )
 
-    // 3. Função para limpar os campos
     fun limparCampos() {
         textoRefeicao = ""
         analiseResultado = ""
         imagemSelecionada = null
     }
 
+    // --- NOVA FUNÇÃO PARA LIMPAR O HISTÓRICO ---
+    fun limparHistorico() {
+        viewModelScope.launch {
+            dao.deletarTudo()
+        }
+    }
+
     fun analisarRefeicao() {
         val descricao = textoRefeicao
         val bitmapOriginal = imagemSelecionada
 
-        // Agora permite avançar se tiver texto OU imagem
         if (descricao.isBlank() && bitmapOriginal == null) return
 
         viewModelScope.launch {
             carregando = true
             analiseResultado = ""
             try {
-                // Criamos um "content" que aceita múltiplos tipos (Texto e Imagem)
                 val inputContent = content {
-                    // Se o usuário selecionou uma imagem, redimensionamos e adicionamos ao envio
                     bitmapOriginal?.let {
-                        // Redimensiona para no máximo 640px de largura para ser rápido e não dar erro de limite
                         val larguraAlvo = 640
                         val alturaAlvo = (it.height * (larguraAlvo.toDouble() / it.width)).toInt()
                         val scaledBitmap = Bitmap.createScaledBitmap(it, larguraAlvo, alturaAlvo, false)
-
                         image(scaledBitmap)
                     }
 
-                    // Adicionamos o texto do prompt
                     text("""
                         Você é um nutricionista especializado. 
                         Analise a refeição da imagem e/ou a descrição fornecida: "$descricao".
@@ -72,9 +80,16 @@ class NutriViewModel : ViewModel() {
                     """.trimIndent())
                 }
 
-                // Chamamos a geração passando o inputContent (multimodal)
                 val response = generativeModel.generateContent(inputContent)
-                analiseResultado = response.text ?: "O NutrIA não conseguiu gerar uma resposta."
+                val resultadoIA = response.text ?: "O NutrIA não conseguiu gerar uma resposta."
+                analiseResultado = resultadoIA
+
+                val novaRefeicao = Refeicao(
+                    descricao = if (descricao.isNotBlank()) descricao else "Análise por foto",
+                    analiseIA = resultadoIA,
+                    data = System.currentTimeMillis()
+                )
+                dao.inserir(novaRefeicao)
 
             } catch (e: Exception) {
                 analiseResultado = "Erro de conexão: ${e.localizedMessage}"

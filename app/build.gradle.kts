@@ -3,9 +3,13 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    // PLUGIN KSP - Essencial para o Banco de Dados (Room)
+    id("com.google.devtools.ksp") version "2.0.21-1.0.27"
 }
+
 android {
     namespace = "br.edu.ifsp.scl.sdm.devmads.nutriai"
+    // Voltando para 36 conforme solicitado pelas bibliotecas
     compileSdk = 36
 
     defaultConfig {
@@ -37,12 +41,12 @@ android {
 
     buildFeatures {
         compose = true
-        buildConfig = true // Ativando esta linha
+        buildConfig = true
     }
 }
 
 dependencies {
-
+    // Bibliotecas Base (Vindas do libs.versions.toml)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -51,6 +55,25 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+
+    // Navegação
+    implementation("androidx.navigation:navigation-compose:2.8.0")
+
+    // --- BANCO DE DADOS ROOM ---
+    val roomVersion = "2.6.1"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    // Usando KSP para gerar as tabelas corretamente
+    ksp("androidx.room:room-compiler:$roomVersion")
+
+    // --- IA GEMINI ---
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
+
+    // --- IMAGENS E ICONES ---
+    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("androidx.compose.material:material-icons-extended")
+
+    // Testes
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -58,30 +81,4 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    implementation("androidx.navigation:navigation-compose:2.8.0")
-
-
-    // Após o inicio do projeto adicionei outras depencendias
-    // Room (Banco de dados local)
-    val roomVersion = "2.6.1"
-    implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
-    annotationProcessor("androidx.room:room-compiler:$roomVersion")
-    // Se estiver usando KSP (recomendado), use: ksp("androidx.room:room-compiler:$roomVersion")
-
-    // Retrofit (Para API externa de receitas)
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-
-    // Gemini AI SDK
-    // Gemini AI SDK
-    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
-
-
-    // Coil (Para carregar imagens/fotos das refeições)
-    implementation("io.coil-kt:coil-compose:2.6.0")
-
-    // Icons estendidos do Material Design
-    implementation("androidx.compose.material:material-icons-extended")
-
 }
