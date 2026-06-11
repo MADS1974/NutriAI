@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-// IMPORTANTE: Adicione este import abaixo para ele usar o NavGraph que criamos
 import br.edu.ifsp.scl.sdm.devmads.nutriai.ui.NutriAppNavigation
 import br.edu.ifsp.scl.sdm.devmads.nutriai.ui.theme.NutriAITheme
 
