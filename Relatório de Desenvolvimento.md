@@ -43,8 +43,8 @@ O modelo de trabalho adotado seguiu o paradigma de **Cocriação Assistida**, on
 
 | Ator | Contribuição Estimada | Atividades Principais |
 | :--- | :---: | :--- |
-| **Inteligência Artificial** | **~80%** | Geração de código estrutural (*boilerplate*), classes de configuração do Room, esqueletos de ecrãs em Jetpack Compose, funções de consumo do SDK do Gemini e sugestões automáticas de resolução de dependências no `build.gradle.kts`. |
-| **Engenheiro Humano** | **~20%** | Definição da arquitetura de dados, modelagem de requisitos nutricionais, design de interação (fluxo Dashboard vs. Registo), governança da marca (definição do nome *NutrIA*) e validação de domínio para garantir a precisão dos dados para cenários reais de nutrição. |
+| **Inteligência Artificial** | **~70%** | Geração de código estrutural (*boilerplate*), classes de configuração do Room, esqueletos de ecrãs em Jetpack Compose, funções de consumo do SDK do Gemini e sugestões automáticas de resolução de dependências no `build.gradle.kts`. |
+| **Engenheiro Humano** | **~30%** | Definição da arquitetura de dados, modelagem de requisitos nutricionais, design de interação (fluxo Dashboard vs. Registo), governança da marca (definição do nome *NutrIA*) e validação de domínio para garantir a precisão dos dados para cenários reais de nutrição. |
 
 > 💡 **Síntese:** A IA otimizou drasticamente a velocidade de escrita do código bruto, enquanto a supervisão humana garantiu a integridade, a coerência arquitetural e a integração correta entre os módulos do sistema.
 
