@@ -37,8 +37,8 @@ Fase 4: Refinamento de UI/UX     [2.5h]  ██████████
 O modelo de trabalho adotado seguiu o paradigma de **Cocriação Assistida**, onde a Inteligência Artificial atuou como um copiloto técnico especializado sob a liderança e supervisão da arquitetura humana.
 
 ```
-🤖 Código Gerado por IA [80%]  ████████████████████████████████
-👤 Direcionamento Humano [20%]  ████████
+🤖 Código Gerado por IA [70%]  ██████████████████████████████
+👤 Direcionamento Humano [30%]  ██████████
 ```
 
 | Ator | Contribuição Estimada | Atividades Principais |
